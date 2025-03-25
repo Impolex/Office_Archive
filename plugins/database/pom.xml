@@ -18,6 +18,11 @@
         <maven.compiler.target>23</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring.boot.version>3.4.3</spring.boot.version>
+        <postgresql.driver.version>42.7.5</postgresql.driver.version>
+        <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+        <jdbc.url>jdbc:postgresql://localhost:5432/postgres</jdbc.url>
+        <jdbc.user>postgres</jdbc.user>
+        <jdbc.password>postgres</jdbc.password>
     </properties>
 
     <dependencies>
@@ -49,23 +54,28 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.5</version>
+            <version>${postgresql.driver.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>11.4.1</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version>
             </plugin>
+
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
                 <version>3.20.2</version>
-
-                <!-- The plugin should hook into the generate goal -->
                 <executions>
                     <execution>
                         <goals>
@@ -73,37 +83,25 @@
                         </goals>
                     </execution>
                 </executions>
-
-                <!-- Manage the plugin's dependency. In this example, we'll use a PostgreSQL database -->
                 <dependencies>
                     <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
-                        <version>42.7.5</version>
+                        <version>${postgresql.driver.version}</version>
                     </dependency>
                 </dependencies>
-
-                <!-- Specify the plugin configuration.
-                     The configuration format is the same as for the standalone code generator -->
                 <configuration>
-
-                    <!-- JDBC connection parameters -->
                     <jdbc>
-                        <driver>org.postgresql.Driver</driver>
-                        <url>jdbc:postgresql:postgres</url>
-                        <user>postgres</user>
-                        <password>postgres</password>
+                        <driver>${jdbc.driver}</driver>
+                        <url>${jdbc.url}</url>
+                        <user>${jdbc.user}</user>
+                        <password>${jdbc.password}</password>
                     </jdbc>
-
-                    <!-- Generator parameters -->
                     <generator>
                         <database>
                             <name>org.jooq.meta.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
                             <excludes></excludes>
-                            <!-- In case your database supports catalogs, e.g. SQL Server:
-                            <inputCatalog>public</inputCatalog>
-                              -->
                             <inputSchema>public</inputSchema>
                         </database>
                         <target>
@@ -113,6 +111,25 @@
                     </generator>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>11.4.1</version>
+                <configuration>
+                    <url>${jdbc.url}</url>
+                    <user>${jdbc.user}</user>
+                    <password>${jdbc.password}</password>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.flywaydb</groupId>
+                        <artifactId>flyway-database-postgresql</artifactId>
+                        <version>11.4.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
         </plugins>
     </build>
 
