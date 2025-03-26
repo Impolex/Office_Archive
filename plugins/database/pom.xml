@@ -105,7 +105,7 @@
                             <inputSchema>public</inputSchema>
                         </database>
                         <target>
-                            <packageName>com.chelchowskidawidjan</packageName>
+                            <packageName>com.chelchowskidawidjan.generated</packageName>
                             <directory>src/main/java/</directory>
                         </target>
                     </generator>
