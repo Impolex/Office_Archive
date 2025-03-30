@@ -105,6 +105,20 @@ public class FilesRecord extends UpdatableRecordImpl<FilesRecord> {
         return (Filetype) get(5);
     }
 
+    /**
+     * Setter for <code>public.files.content</code>.
+     */
+    public void setContent(byte[] value) {
+        set(6, value);
+    }
+
+    /**
+     * Getter for <code>public.files.content</code>.
+     */
+    public byte[] getContent() {
+        return (byte[]) get(6);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -128,7 +142,7 @@ public class FilesRecord extends UpdatableRecordImpl<FilesRecord> {
     /**
      * Create a detached, initialised FilesRecord
      */
-    public FilesRecord(String[] uuid, String[] objectname, String[] uploader, LocalDateTime creationdate, LocalDateTime modificationdate, Filetype filetype) {
+    public FilesRecord(String[] uuid, String[] objectname, String[] uploader, LocalDateTime creationdate, LocalDateTime modificationdate, Filetype filetype, byte[] content) {
         super(Files.FILES);
 
         setUuid(uuid);
@@ -137,6 +151,7 @@ public class FilesRecord extends UpdatableRecordImpl<FilesRecord> {
         setCreationdate(creationdate);
         setModificationdate(modificationdate);
         setFiletype(filetype);
+        setContent(content);
         resetTouchedOnNotNull();
     }
 }

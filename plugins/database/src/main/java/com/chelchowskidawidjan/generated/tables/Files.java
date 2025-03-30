@@ -90,6 +90,11 @@ public class Files extends TableImpl<FilesRecord> {
      */
     public final TableField<FilesRecord, Filetype> FILETYPE = createField(DSL.name("filetype"), SQLDataType.VARCHAR.nullable(false).asEnumDataType(Filetype.class), this, "");
 
+    /**
+     * The column <code>public.files.content</code>.
+     */
+    public final TableField<FilesRecord, byte[]> CONTENT = createField(DSL.name("content"), SQLDataType.BLOB, this, "");
+
     private Files(Name alias, Table<FilesRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
