@@ -1,6 +1,5 @@
 package com.chelchowskidawidjan;
 
-import static org.jooq.impl.DSL.*;
 import static com.chelchowskidawidjan.generated.Tables.*;
 
 import java.sql.*;
@@ -20,13 +19,8 @@ public class databaseConnection {
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String dbUser = "postgres";
     private final String dbPassword = "postgres";
-    private User invokingUser = null;
 
     public databaseConnection() {
-    }
-
-    public databaseConnection(User invokingUser) {
-        this.invokingUser = invokingUser;
     }
 
     private boolean persistUserCreation(String[] objectName, String[] UUID, String[] passwordHash, String[] passwordSalt) {
@@ -49,12 +43,12 @@ public class databaseConnection {
         }
     }
 
-    public boolean persistFileUpload(String[] fileUUID, String[] objectName, Filetype fileType, String[] uploaderUUID, LocalDateTime creationDate) {
+    public boolean persistFileUpload(String[] fileUUID, String[] objectName, Filetype fileType, String[] uploaderUUID, LocalDateTime creationDate, byte[] content) {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-            InsertValuesStep6<FilesRecord, String[], String[], String[], LocalDateTime, LocalDateTime, Filetype> step =
-                    ctx.insertInto(FILES, FILES.UUID, FILES.OBJECTNAME, FILES.UPLOADER, FILES.CREATIONDATE, FILES.MODIFICATIONDATE, FILES.FILETYPE)
-                            .values(fileUUID, objectName, uploaderUUID, creationDate, creationDate, fileType);
+            InsertValuesStep7<FilesRecord, String[], String[], String[], LocalDateTime, LocalDateTime, Filetype, byte[]> step =
+                    ctx.insertInto(FILES, FILES.UUID, FILES.OBJECTNAME, FILES.UPLOADER, FILES.CREATIONDATE, FILES.MODIFICATIONDATE, FILES.FILETYPE, FILES.CONTENT)
+                            .values(fileUUID, objectName, uploaderUUID, creationDate, creationDate, fileType, content);
             step.execute();
             con.close();
             return true;
@@ -108,5 +102,9 @@ public class databaseConnection {
             return false;
         }
     }
+
+    //TODO: fetch files for user
+    //TODO: fetch file content
+    //TODO: persist file content(edit)
 
 }
