@@ -80,6 +80,23 @@ public class databaseConnection {
         }
     }
 
+    public boolean persistFileEdit(String[] fileUUID, LocalDateTime editDate, byte[] content) {
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+            ctx.update(FILES).set(FILES.CONTENT, content).set(FILES.MODIFICATIONDATE, editDate).where(FILES.UUID.eq(fileUUID)).execute();
+            con.close();
+            return true;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return false;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return false;
+        }
+    }
+
     private boolean persistFileDeletion(String[] UUID) {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
