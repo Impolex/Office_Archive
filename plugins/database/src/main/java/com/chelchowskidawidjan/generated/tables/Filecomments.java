@@ -60,22 +60,22 @@ public class Filecomments extends TableImpl<FilecommentsRecord> {
     /**
      * The column <code>public.filecomments.uuid</code>.
      */
-    public final TableField<FilecommentsRecord, String[]> UUID = createField(DSL.name("uuid"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilecommentsRecord, String[]> UUID = createField(DSL.name("uuid"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.filecomments.author</code>.
      */
-    public final TableField<FilecommentsRecord, String[]> AUTHOR = createField(DSL.name("author"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilecommentsRecord, String[]> AUTHOR = createField(DSL.name("author"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.filecomments.file</code>.
      */
-    public final TableField<FilecommentsRecord, String[]> FILE = createField(DSL.name("file"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilecommentsRecord, String[]> FILE = createField(DSL.name("file"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.filecomments.content</code>.
      */
-    public final TableField<FilecommentsRecord, String[]> CONTENT = createField(DSL.name("content"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilecommentsRecord, String[]> CONTENT = createField(DSL.name("content"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     private Filecomments(Name alias, Table<FilecommentsRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

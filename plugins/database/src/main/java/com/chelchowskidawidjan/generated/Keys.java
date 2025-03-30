@@ -7,10 +7,12 @@ package com.chelchowskidawidjan.generated;
 import com.chelchowskidawidjan.generated.tables.Filecomments;
 import com.chelchowskidawidjan.generated.tables.Filepermissions;
 import com.chelchowskidawidjan.generated.tables.Files;
+import com.chelchowskidawidjan.generated.tables.FlywaySchemaHistory;
 import com.chelchowskidawidjan.generated.tables.Users;
 import com.chelchowskidawidjan.generated.tables.records.FilecommentsRecord;
 import com.chelchowskidawidjan.generated.tables.records.FilepermissionsRecord;
 import com.chelchowskidawidjan.generated.tables.records.FilesRecord;
+import com.chelchowskidawidjan.generated.tables.records.FlywaySchemaHistoryRecord;
 import com.chelchowskidawidjan.generated.tables.records.UsersRecord;
 
 import org.jooq.ForeignKey;
@@ -34,6 +36,7 @@ public class Keys {
 
     public static final UniqueKey<FilecommentsRecord> FILECOMMENTS_PKEY = Internal.createUniqueKey(Filecomments.FILECOMMENTS, DSL.name("filecomments_pkey"), new TableField[] { Filecomments.FILECOMMENTS.UUID }, true);
     public static final UniqueKey<FilesRecord> FILES_PKEY = Internal.createUniqueKey(Files.FILES, DSL.name("files_pkey"), new TableField[] { Files.FILES.UUID }, true);
+    public static final UniqueKey<FlywaySchemaHistoryRecord> FLYWAY_SCHEMA_HISTORY_PK = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("flyway_schema_history_pk"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<UsersRecord> USERS_PKEY = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), new TableField[] { Users.USERS.UUID }, true);
 
     // -------------------------------------------------------------------------

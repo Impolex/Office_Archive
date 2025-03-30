@@ -63,7 +63,7 @@ public class Files extends TableImpl<FilesRecord> {
     /**
      * The column <code>public.files.uuid</code>.
      */
-    public final TableField<FilesRecord, String[]> UUID = createField(DSL.name("uuid"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilesRecord, String[]> UUID = createField(DSL.name("uuid"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.files.objectname</code>.
@@ -73,7 +73,7 @@ public class Files extends TableImpl<FilesRecord> {
     /**
      * The column <code>public.files.uploader</code>.
      */
-    public final TableField<FilesRecord, String[]> UPLOADER = createField(DSL.name("uploader"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilesRecord, String[]> UPLOADER = createField(DSL.name("uploader"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.files.creationdate</code>.

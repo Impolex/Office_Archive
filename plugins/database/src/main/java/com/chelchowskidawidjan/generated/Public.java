@@ -7,6 +7,7 @@ package com.chelchowskidawidjan.generated;
 import com.chelchowskidawidjan.generated.tables.Filecomments;
 import com.chelchowskidawidjan.generated.tables.Filepermissions;
 import com.chelchowskidawidjan.generated.tables.Files;
+import com.chelchowskidawidjan.generated.tables.FlywaySchemaHistory;
 import com.chelchowskidawidjan.generated.tables.Users;
 
 import java.util.Arrays;
@@ -47,6 +48,11 @@ public class Public extends SchemaImpl {
     public final Files FILES = Files.FILES;
 
     /**
+     * The table <code>public.flyway_schema_history</code>.
+     */
+    public final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
+
+    /**
      * The table <code>public.users</code>.
      */
     public final Users USERS = Users.USERS;
@@ -70,6 +76,7 @@ public class Public extends SchemaImpl {
             Filecomments.FILECOMMENTS,
             Filepermissions.FILEPERMISSIONS,
             Files.FILES,
+            FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Users.USERS
         );
     }

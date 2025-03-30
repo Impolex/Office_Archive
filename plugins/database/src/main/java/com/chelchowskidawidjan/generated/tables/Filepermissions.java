@@ -60,12 +60,12 @@ public class Filepermissions extends TableImpl<FilepermissionsRecord> {
     /**
      * The column <code>public.filepermissions.user</code>.
      */
-    public final TableField<FilepermissionsRecord, String[]> USER = createField(DSL.name("user"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilepermissionsRecord, String[]> USER = createField(DSL.name("user"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.filepermissions.file</code>.
      */
-    public final TableField<FilepermissionsRecord, String[]> FILE = createField(DSL.name("file"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<FilepermissionsRecord, String[]> FILE = createField(DSL.name("file"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.filepermissions.permission</code>.

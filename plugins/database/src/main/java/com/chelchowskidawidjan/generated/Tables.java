@@ -7,6 +7,7 @@ package com.chelchowskidawidjan.generated;
 import com.chelchowskidawidjan.generated.tables.Filecomments;
 import com.chelchowskidawidjan.generated.tables.Filepermissions;
 import com.chelchowskidawidjan.generated.tables.Files;
+import com.chelchowskidawidjan.generated.tables.FlywaySchemaHistory;
 import com.chelchowskidawidjan.generated.tables.Users;
 
 
@@ -30,6 +31,11 @@ public class Tables {
      * The table <code>public.files</code>.
      */
     public static final Files FILES = Files.FILES;
+
+    /**
+     * The table <code>public.flyway_schema_history</code>.
+     */
+    public static final FlywaySchemaHistory FLYWAY_SCHEMA_HISTORY = FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY;
 
     /**
      * The table <code>public.users</code>.

@@ -59,7 +59,7 @@ public class Users extends TableImpl<UsersRecord> {
     /**
      * The column <code>public.users.uuid</code>.
      */
-    public final TableField<UsersRecord, String[]> UUID = createField(DSL.name("uuid"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<UsersRecord, String[]> UUID = createField(DSL.name("uuid"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.users.objectname</code>.
@@ -69,7 +69,7 @@ public class Users extends TableImpl<UsersRecord> {
     /**
      * The column <code>public.users.passwordhash</code>.
      */
-    public final TableField<UsersRecord, String[]> PASSWORDHASH = createField(DSL.name("passwordhash"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<UsersRecord, String[]> PASSWORDHASH = createField(DSL.name("passwordhash"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     /**
      * The column <code>public.users.isadmin</code>.
@@ -79,7 +79,7 @@ public class Users extends TableImpl<UsersRecord> {
     /**
      * The column <code>public.users.passwordsalt</code>.
      */
-    public final TableField<UsersRecord, String[]> PASSWORDSALT = createField(DSL.name("passwordsalt"), SQLDataType.CHAR(1).array().nullable(false), this, "");
+    public final TableField<UsersRecord, String[]> PASSWORDSALT = createField(DSL.name("passwordsalt"), SQLDataType.VARCHAR.array().nullable(false), this, "");
 
     private Users(Name alias, Table<UsersRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
