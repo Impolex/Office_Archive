@@ -80,6 +80,23 @@ public class databaseConnection {
         }
     }
 
+    private boolean persistFileDeletion(String[] UUID) {
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+            ctx.deleteFrom(FILES).where(FILES.UUID.eq(UUID)).execute();
+            con.close();
+            return true;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return false;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return false;
+        }
+    }
+
     public boolean persistCommentUpload(String[] commentUUID, String[] userUUID, String[] fileUUID, String[] content) {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
@@ -123,7 +140,5 @@ public class databaseConnection {
     //TODO: fetch files for user
     //TODO: fetch file content
     //TODO: persist file content(edit)
-    //TODO: user deletion
-    //TODO: file deletion
 
 }
