@@ -154,8 +154,26 @@ public class databaseConnection {
         }
     }
 
+    public byte[] fetchFileContent(String[] UUID) {
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)) {
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+            FilesRecord file = ctx.selectFrom(FILES).where(FILES.UUID.eq(UUID)).fetchOne();
+            if(file != null) {
+                return file.getContent();
+            }
+            return null;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return null;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return null;
+        }
+    }
+
     //TODO: fetch files for user
     //TODO: fetch file content
-    //TODO: persist file content(edit)
 
 }
