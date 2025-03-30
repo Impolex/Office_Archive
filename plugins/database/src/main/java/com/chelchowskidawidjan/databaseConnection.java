@@ -6,7 +6,9 @@ import static com.chelchowskidawidjan.generated.Tables.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 
+import com.chelchowskidawidjan.generated.enums.Permissions;
 import com.chelchowskidawidjan.generated.tables.records.FilecommentsRecord;
+import com.chelchowskidawidjan.generated.tables.records.FilepermissionsRecord;
 import com.chelchowskidawidjan.generated.tables.records.FilesRecord;
 import com.chelchowskidawidjan.generated.tables.records.UsersRecord;
 import com.chelchowskidawidjan.generated.enums.Filetype;
@@ -73,6 +75,26 @@ public class databaseConnection {
             InsertValuesStep4<FilecommentsRecord, String[], String[], String[], String[]> step =
                     ctx.insertInto(FILECOMMENTS, FILECOMMENTS.UUID, FILECOMMENTS.AUTHOR, FILECOMMENTS.FILE, FILECOMMENTS.CONTENT)
                             .values(commentUUID, userUUID, fileUUID, content);
+            step.execute();
+            con.close();
+            return true;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return false;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean persistUserFilePermissions(String[] userUUID, String[] fileUUID, Permissions permissions) {
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+            InsertValuesStep3<FilepermissionsRecord, String[], String[], Permissions> step =
+                    ctx.insertInto(FILEPERMISSIONS, FILEPERMISSIONS.USER, FILEPERMISSIONS.FILE, FILEPERMISSIONS.PERMISSION)
+                            .values(userUUID, fileUUID, permissions);
             step.execute();
             con.close();
             return true;
