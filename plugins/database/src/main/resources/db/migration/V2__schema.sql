@@ -1,77 +1,26 @@
-CREATE TYPE permissions as ENUM
-    (
-        'NO_PERMISSIONS',
-        'READ',
-        'WRITE'
-    );
+ALTER TABLE files drop constraint files_uploader_fkey;
+ALTER TABLE fileComments drop constraint fileComments_author_fkey;
+ALTER TABLE fileComments drop constraint fileComments_file_fkey;
+ALTER TABLE filePermissions drop constraint filePermissions_user_fkey;
+ALTER TABLE filePermissions drop constraint filePermissions_file_fkey;
 
-CREATE TYPE fileType as ENUM
-    (
-        'DOC',
-        'DOCX',
-        'RTF',
-        'PDF',
-        'WPD',
-        'JPEG',
-        'PNG',
-        'GIF',
-        'HEIF',
-        'AAC',
-        'MP3',
-        'WAV',
-        'AMV',
-        'MPEG',
-        'FLV',
-        'AVI',
-        'C',
-        'JAVA',
-        'PY',
-        'JS',
-        'TS',
-        'HTML',
-        'ASP',
-        'CSS',
-        'XPS',
-        'ISO',
-        'RAR',
-        'TAR',
-        'GZ',
-        'SEVENZ',
-        'ZIP',
-        'TXT',
-        'CSV'
-    );
+ALTER TABLE users ALTER COLUMN uuid TYPE varchar[36];
+ALTER TABLE users ALTER COLUMN passwordHash TYPE varchar[256];
+ALTER TABLE users ALTER COLUMN passwordSalt TYPE varchar[12];
 
-CREATE TABLE users
-(
-    uuid char[36] PRIMARY KEY NOT NULL,
-    objectName char[20] NOT NULL,
-    passwordHash char[256] NOT NULL,
-    passwordSalt char[12] NOT NULL,
-    isAdmin bool NOT NULL
-);
+ALTER TABLE files ALTER COLUMN uuid TYPE varchar[36];
+ALTER TABLE files ALTER COLUMN uploader TYPE varchar[36];
 
-CREATE TABLE files
-(
-    uuid char[36] PRIMARY KEY NOT NULL,
-    objectName char[30] NOT NULL,
-    fileType fileType NOT NULL,
-    uploader char[100] REFERENCES users(uuid) NOT NULL,
-    creationDate TIMESTAMP NOT NULL,
-    modificationDate TIMESTAMP NOT NULL
-);
+ALTER TABLE fileComments ALTER COLUMN uuid TYPE varchar[36];
+ALTER TABLE fileComments ALTER COLUMN author TYPE varchar[36];
+ALTER TABLE fileComments ALTER COLUMN file TYPE varchar[36];
+ALTER TABLE fileComments ALTER COLUMN content TYPE varchar[256];
 
-CREATE TABLE fileComments
-(
-    uuid char[36] PRIMARY KEY NOT NULL,
-    author char[100] REFERENCES users(uuid) NOT NULL,
-    file char[100] REFERENCES files(uuid) NOT NULL,
-    content char[100] NOT NULL
-);
+ALTER TABLE filePermissions ALTER COLUMN "user" TYPE varchar[36];
+ALTER TABLE filePermissions ALTER COLUMN file TYPE varchar[36];
 
-CREATE TABLE filePermissions
-(
-    "user" char[100] REFERENCES users(uuid) NOT NULL,
-    file char[100] REFERENCES files(uuid) NOT NULL,
-    permission permissions NOT NULL
-);
+ALTER TABLE files ADD CONSTRAINT files_uploader_fkey FOREIGN KEY (uploader) REFERENCES users(uuid);
+ALTER TABLE fileComments ADD CONSTRAINT fileComments_author_fkey FOREIGN KEY (author) REFERENCES users(uuid);
+ALTER TABLE fileComments ADD CONSTRAINT fileComments_file_fkey FOREIGN KEY (file) REFERENCES files(uuid);
+ALTER TABLE filePermissions ADD CONSTRAINT filePermissions_user_fkey FOREIGN KEY ("user") REFERENCES users(uuid);
+ALTER TABLE filePermissions ADD CONSTRAINT filePermissions_file_fkey FOREIGN KEY (file) REFERENCES files(uuid);
