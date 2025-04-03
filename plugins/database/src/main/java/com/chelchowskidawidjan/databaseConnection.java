@@ -176,7 +176,7 @@ public class databaseConnection {
             return null;
         }
         catch(DataAccessException e) {
-            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            System.err.println("Error while fetching data from the database:\n" + e.getMessage());
             return null;
         }
     }
@@ -192,11 +192,28 @@ public class databaseConnection {
             return null;
         }
         catch(DataAccessException e) {
-            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            System.err.println("Error while fetching data from the database:\n" + e.getMessage());
+            return null;
+        }
+    }
+
+    public FilesRecord fetchFileMetadata(String[] UUID) {
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)) {
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+            FilesRecord file = ctx.selectFrom(FILES).where(FILES.UUID.eq(UUID)).fetchOne();
+            return file;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return null;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while fetching data from the database:\n" + e.getMessage());
             return null;
         }
     }
 
     //TODO: fetch file metadata
+    //TODO: check if user has permissions
 
 }
