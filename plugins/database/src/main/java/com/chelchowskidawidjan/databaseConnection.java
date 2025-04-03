@@ -213,7 +213,22 @@ public class databaseConnection {
         }
     }
 
-    //TODO: fetch file metadata
-    //TODO: check if user has permissions
-
+    public Permissions fetchUserFilePermissions(String[] userUUID, String[] fileUUID) {
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)) {
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+            Permissions perm = ctx.select(FILEPERMISSIONS.PERMISSION).from(FILEPERMISSIONS).where(FILEPERMISSIONS.USER.eq(userUUID)).and(FILEPERMISSIONS.FILE.eq(fileUUID)).fetchOne().getValue(FILEPERMISSIONS.PERMISSION, Permissions.class);
+            return perm;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return null;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while fetching data from the database:\n" + e.getMessage());
+            return null;
+        }
+        catch(NullPointerException e){
+            return Permissions.NO_PERMISSIONS;
+        }
+    }
 }
