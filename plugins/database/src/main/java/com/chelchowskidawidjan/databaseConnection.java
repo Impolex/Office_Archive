@@ -107,6 +107,7 @@ public class databaseConnection {
     private boolean persistFileDeletion(String[] UUID) {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+            ctx.deleteFrom(FILEPERMISSIONS).where(FILEPERMISSIONS.FILE.eq(UUID)).execute();
             ctx.deleteFrom(FILES).where(FILES.UUID.eq(UUID)).execute();
             con.close();
             return true;
@@ -197,6 +198,5 @@ public class databaseConnection {
     }
 
     //TODO: fetch file metadata
-    //TODO: update deleteFiles for filepermissions table
 
 }
