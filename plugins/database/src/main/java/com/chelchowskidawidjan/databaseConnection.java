@@ -183,9 +183,8 @@ public class databaseConnection {
     public List<String[]> fetchFilesforUser(String[] userUUID) {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)) {
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-            List<FilepermissionsRecord> files = ctx.select(FILEPERMISSIONS.FILE).from(FILEPERMISSIONS).where(FILEPERMISSIONS.USER.eq(userUUID)).fetchMany();
-
-            return null;
+            List<String[]> files = ctx.select(FILEPERMISSIONS.FILE).from(FILEPERMISSIONS).where(FILEPERMISSIONS.USER.eq(userUUID)).fetch().getValues(FILEPERMISSIONS.FILE, String[].class);
+            return files;
         }
         catch(java.sql.SQLException e){
             System.err.println("Error while establishing connection to database:\n" + e.getMessage());
@@ -197,7 +196,6 @@ public class databaseConnection {
         }
     }
 
-    //TODO: fetch files for user
     //TODO: fetch file metadata
     //TODO: update deleteFiles for filepermissions table
 
