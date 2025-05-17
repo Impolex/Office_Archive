@@ -1,5 +1,5 @@
 package com.chelchowskidawidjan;
 
-public class UserManagement {
+public class UserService {
 
 }
