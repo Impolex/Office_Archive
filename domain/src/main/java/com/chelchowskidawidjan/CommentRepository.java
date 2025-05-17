@@ -1,15 +1,18 @@
 package com.chelchowskidawidjan;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.UUID;
 
 public interface CommentRepository {
-    boolean persistCommentUpload(String[] commentUUID, String[] userUUID, String[] fileUUID, String[] content);
+    boolean persistCommentUpload(Comment comment);
 
-    boolean persistCommentRemoval(String[] commentUUID);
+    boolean persistCommentEdit(Comment comment);
 
-    Comment getCommentByUUID(String[] commentUUID);
+    boolean persistCommentRemoval(UUID commentUUID);
 
-    Iterable<Comment> getCommentsOfFile(String[] fileUUID);
+    Comment getCommentByUUID(UUID commentUUID);
 
-    Iterable<Comment> getCommentsOfUser(String[] userUUID);
+    List<Comment> getCommentsOfFile(UUID fileUUID);
+
+    List<Comment> getCommentsOfUser(UUID userUUID);
 }

@@ -1,11 +1,11 @@
 package com.chelchowskidawidjan;
 
+import java.util.UUID;
+
 public interface PermissionsRepository {
-    boolean persistUserFilePermissions(String[] userUUID, String[] fileUUID, Permissions permissions);
+    boolean persistUserFilePermissions(UUID userUUID, UUID fileUUID, Permissions permissions);
 
-    boolean persistUserFilePermissionsUpdate(String[] userUUID, String[] fileUUID, Permissions permissions);
+    boolean persistUserFilePermissionsUpdate(UUID userUUID, UUID fileUUID, Permissions permissions);
 
-    Permissions fetchUserFilePermissions(String[] userUUID, String[] fileUUID);
-
-    Iterable<Permissions> fetchAllUserPermissionsForFile(String[] userUUID, String[] fileUUID);
+    Permissions fetchUserFilePermissions(UUID userUUID, UUID fileUUID);
 }

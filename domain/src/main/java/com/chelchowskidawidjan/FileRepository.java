@@ -1,18 +1,16 @@
 package com.chelchowskidawidjan;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public interface FileRepository {
-    boolean persistFileUpload(String[] fileUUID, String[] objectName, FileType fileType, String[] uploaderUUID, LocalDateTime creationDate, byte[] content);
+    boolean persistFileUpload(File file);
 
-    boolean persistFileEdit(String[] fileUUID, LocalDateTime editDate, byte[] content);
+    boolean persistFileEdit(File file);
 
-    boolean persistFileDeletion(String[] UUID);
+    boolean persistFileDeletion(UUID UUID);
 
-    byte[] fetchFileContent(String[] UUID);
+    Map<String, UUID> fetchFilesForUser(UUID userUUID);
 
-    List<String[]> fetchFilesforUser(String[] userUUID);
-
-    File fetchFile(String[] UUID);
+    File fetchFileByUUID(UUID UUID);
 }

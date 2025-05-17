@@ -1,19 +1,22 @@
 package com.chelchowskidawidjan;
 
+import java.util.List;
+import java.util.UUID;
+
 public interface UserRepository {
-    boolean persistUserCreation(String[] objectName, String[] UUID, String[] passwordHash, String[] passwordSalt);
+    boolean persistUserCreation(User user, String passwordHash, String salt);
 
-    boolean persistUserDeletion(String[] UUID);
+    boolean persistUserDeletion(UUID UUID);
 
-    boolean persistUserNameUpdate(String[] UUID, String[] Name);
+    boolean persistUserUpdate(User user);
 
-    boolean persistUserPasswordUpdate(String[] UUID, String[] passwordHash, String[] passwordSalt);
+    boolean persistUserPasswordUpdate(UUID UUID, String passwordHash, String salt);
 
-    User fetchUserByUUID(String[] UUID);
+    User fetchUserByUUID(UUID UUID);
 
-    Iterable<User> fetchAllUsers();
+    List<User> fetchAllUsers();
 
-    Iterable<User> fetchAllAdmins();
+    List<User> fetchAllAdmins();
 
-    Iterable<User> fetchUsersWithAccessToFile(String[] fileUUID);
+    List<User> fetchUsersWithAccessToFile(UUID fileUUID);
 }
