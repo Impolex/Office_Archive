@@ -1,5 +1,6 @@
 package com.chelchowskidawidjan;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class File {
@@ -7,11 +8,10 @@ public class File {
     final String ID;
     User uploader;
     FileType fileType;
-    int creationDate;
-    int modificationDate;
-    ArrayList<Comment> comments;
+    LocalDateTime creationDate;
+    LocalDateTime modificationDate;
 
-    public File(String id) {
+    public File(String id, String objectName, User uploader, FileType fileType, LocalDateTime creationDate, LocalDateTime modificationDate) {
         ID = id;
     }
 }
