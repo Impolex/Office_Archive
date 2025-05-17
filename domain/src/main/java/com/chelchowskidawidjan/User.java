@@ -6,7 +6,9 @@ public class User {
     boolean isAdmin;
 
 
-    public User(String id) {
+    public User(String id, String objectName, boolean isAdmin) {
         ID = id;
+        this.objectName = objectName;
+        this.isAdmin = isAdmin;
     }
 }

@@ -13,5 +13,10 @@ public class File {
 
     public File(String id, String objectName, User uploader, FileType fileType, LocalDateTime creationDate, LocalDateTime modificationDate) {
         ID = id;
+        this.objectName = objectName;
+        this.uploader = uploader;
+        this.fileType = fileType;
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
     }
 }

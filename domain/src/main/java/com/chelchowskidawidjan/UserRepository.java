@@ -5,13 +5,15 @@ public interface UserRepository {
 
     boolean persistUserDeletion(String[] UUID);
 
-    boolean persistUserUpdate(String[] objectName, String[] UUID, String[] passwordHash, String[] passwordSalt);
+    boolean persistUserNameUpdate(String[] UUID, String[] Name);
 
-    User fetchUserByUUID(String UUID);
+    boolean persistUserPasswordUpdate(String[] UUID, String[] passwordHash, String[] passwordSalt);
+
+    User fetchUserByUUID(String[] UUID);
 
     Iterable<User> fetchAllUsers();
 
     Iterable<User> fetchAllAdmins();
 
-    Iterable<User> fetchUsersWithAccessToFile(String fileUUID);
+    Iterable<User> fetchUsersWithAccessToFile(String[] fileUUID);
 }

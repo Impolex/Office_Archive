@@ -132,7 +132,7 @@ public class DatabaseFileRepository implements FileRepository {
 
             File tempFile = new File(Arrays.toString(file.getUuid()),
                     Arrays.toString(file.getObjectname()),
-                    databaseUserRepository.fetchUserByUUID(Arrays.toString(file.getUploader())),
+                    databaseUserRepository.fetchUserByUUID(file.getUploader()),
                             FileType.valueOf(file.getFiletype().name()),
                             file.getCreationdate(),
                             file.getModificationdate()
