@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserRepository {
+    boolean login(String username, String password);
+
     boolean persistUserCreation(User user, String passwordHash, String salt);
 
     boolean persistUserDeletion(UUID UUID);
@@ -17,6 +19,4 @@ public interface UserRepository {
     List<User> fetchAllUsers();
 
     List<User> fetchAllAdmins();
-
-    List<User> fetchUsersWithAccessToFile(UUID fileUUID);
 }
