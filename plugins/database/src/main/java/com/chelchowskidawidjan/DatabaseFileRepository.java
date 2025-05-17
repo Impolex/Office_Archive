@@ -4,16 +4,12 @@ import static com.chelchowskidawidjan.generated.Tables.*;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import com.chelchowskidawidjan.generated.enums.Permissions;
-import com.chelchowskidawidjan.generated.tables.Filepermissions;
-import com.chelchowskidawidjan.generated.tables.records.FilecommentsRecord;
 import com.chelchowskidawidjan.generated.tables.records.FilepermissionsRecord;
 import com.chelchowskidawidjan.generated.tables.records.FilesRecord;
-import com.chelchowskidawidjan.generated.tables.records.UsersRecord;
 import com.chelchowskidawidjan.generated.enums.Filetype;
 import org.jooq.*;
 import org.jooq.exception.DataAccessException;
@@ -23,6 +19,8 @@ public class DatabaseFileRepository implements FileRepository {
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String dbUser = "postgres";
     private final String dbPassword = "postgres";
+
+    private final DatabaseUserRepository databaseUserRepository = new DatabaseUserRepository();
 
     @Override
     public boolean persistFileUpload(String[] fileUUID, String[] objectName, FileType fileType, String[] uploaderUUID, LocalDateTime creationDate, byte[] content) {
@@ -127,11 +125,20 @@ public class DatabaseFileRepository implements FileRepository {
     }
 
     @Override
-    public Optional<File> fetchFile(String[] UUID) {
+    public File fetchFile(String[] UUID) {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)) {
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
             FilesRecord file = ctx.selectFrom(FILES).where(FILES.UUID.eq(UUID)).fetchOne();
-            return file;
+
+            File tempFile = new File(Arrays.toString(file.getUuid()),
+                    Arrays.toString(file.getObjectname()),
+                    databaseUserRepository.fetchUserByUUID(Arrays.toString(file.getUploader())),
+                            FileType.valueOf(file.getFiletype().name()),
+                            file.getCreationdate(),
+                            file.getModificationdate()
+            );
+
+            return tempFile;
         }
         catch(java.sql.SQLException e){
             System.err.println("Error while establishing connection to database:\n" + e.getMessage());
