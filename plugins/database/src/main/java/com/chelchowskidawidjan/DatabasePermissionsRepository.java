@@ -3,6 +3,7 @@ package com.chelchowskidawidjan;
 import static com.chelchowskidawidjan.generated.Tables.*;
 
 import java.sql.*;
+import java.util.List;
 
 import com.chelchowskidawidjan.generated.enums.Permissions;
 import com.chelchowskidawidjan.generated.tables.records.FilepermissionsRecord;
@@ -66,6 +67,21 @@ public class DatabasePermissionsRepository implements PermissionsRepository {
 
     @Override
     public Iterable<com.chelchowskidawidjan.Permissions> fetchAllUserPermissionsForFile(String[] userUUID, String[] fileUUID) {
-        return null;
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+
+            List<com.chelchowskidawidjan.Permissions> users = ctx.selectFrom(FILEPERMISSIONS).where(FILEPERMISSIONS.FILE.eq(fileUUID).and(FILEPERMISSIONS.USER.eq(USERS.UUID))).fetchInto(com.chelchowskidawidjan.Permissions.class);
+
+            con.close();
+            return users;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return null;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return null;
+        }
     }
 }
