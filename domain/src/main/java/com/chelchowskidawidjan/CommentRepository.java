@@ -7,9 +7,9 @@ public interface CommentRepository {
 
     boolean persistCommentRemoval(String[] commentUUID);
 
-    Optional<Comment> getCommentByUUID(String commentUUID);
+    Comment getCommentByUUID(String[] commentUUID);
 
-    Iterable<Comment> getCommentsOfFile(String fileUUID);
+    Iterable<Comment> getCommentsOfFile(String[] fileUUID);
 
-    Iterable<Comment> getCommentsOfUser(String userUUID);
+    Iterable<Comment> getCommentsOfUser(String[] userUUID);
 }
