@@ -17,6 +17,14 @@ public class JooqUserObject extends AbstractPluginUser{
         return this.objectName;
     }
 
+    String[] getUUIDArray() {
+        return new String[]{this.uuid};
+    }
+
+    String[] getObjectNameArray() {
+        return new String[]{this.objectName};
+    }
+
     @Override
     boolean isAdmin() {
         return this.isAdmin;

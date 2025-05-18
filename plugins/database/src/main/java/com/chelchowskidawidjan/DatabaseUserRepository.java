@@ -7,28 +7,78 @@ import org.jooq.*;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.DSL;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.sql.DriverManager;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class DatabaseUserRepository implements UserRepository {
 
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String dbUser = "postgres";
     private final String dbPassword = "postgres";
+    private UserAdapter adapter;
 
     public DatabaseUserRepository() {
     }
 
     @Override
-    public boolean persistUserCreation(String[] objectName, String[] UUID, String[] passwordHash, String[] passwordSalt) {
+    public boolean login(String username, String password) {
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+
+            String[] tempUsername = {username};
+
+            Record2<String[], String[]> result = ctx
+                    .select(USERS.PASSWORDHASH, USERS.PASSWORDSALT)
+                    .from(USERS)
+                    .where(USERS.OBJECTNAME.eq(tempUsername))
+                    .fetchOne();
+
+            if(result == null){
+                return false;
+            }
+
+            String[] storedHash = result.get(USERS.PASSWORDHASH);
+            byte[] storedSalt = Arrays.toString(result.get(USERS.PASSWORDSALT)).getBytes();
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-512");
+            digest.update(storedSalt);
+            String[] computedHash = new String[]{Arrays.toString(digest.digest(password.getBytes(StandardCharsets.UTF_8)))};
+
+            con.close();
+            return Arrays.equals(storedHash, computedHash);
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return false;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return false;
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean persistUserCreation(User user, String passwordHash, String salt) {
+
+        JooqUserObject pluginUser = adapter.domainToPlugin(user, JooqUserObject.class);
+        String[] passwordHashArray = {passwordHash};
+        String[] saltArray = {salt};
+
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
             InsertValuesStep5<UsersRecord, String[], String[], String[], String[], Boolean> step =
                     ctx.insertInto(USERS, USERS.UUID, USERS.OBJECTNAME, USERS.PASSWORDHASH, USERS.PASSWORDSALT, USERS.ISADMIN)
-                            .values(UUID, objectName, passwordHash, passwordSalt, false);
+                            .values(pluginUser.getUUIDArray(), pluginUser.getObjectNameArray(), passwordHashArray, saltArray, false);
             step.execute();
             con.close();
             return true;
@@ -44,49 +94,15 @@ public class DatabaseUserRepository implements UserRepository {
     }
 
     @Override
-    public boolean persistUserDeletion(String[] UUID) {
+    public boolean persistUserDeletion(UUID UUID) {
+
+        String[] uuidArray = {UUID.toString()};
+
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-            ctx.deleteFrom(USERS).where(USERS.UUID.eq(UUID)).execute();
-            con.close();
-            return true;
-        }
-        catch(java.sql.SQLException e){
-            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
-            return false;
-        }
-        catch(DataAccessException e) {
-            System.err.println("Error while writing data to the database:\n" + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public boolean persistUserNameUpdate(String[] UUID, String[] name) {
-        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
-            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-
-            ctx.update(USERS).set(USERS.OBJECTNAME, name).where(USERS.UUID.eq(UUID)).execute();
-
-            con.close();
-            return true;
-        }
-        catch(java.sql.SQLException e){
-            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
-            return false;
-        }
-        catch(DataAccessException e) {
-            System.err.println("Error while writing data to the database:\n" + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public boolean persistUserPasswordUpdate(String[] UUID, String[] passwordHash, String[] passwordSalt){
-        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
-            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-
-            ctx.update(USERS).set(USERS.PASSWORDHASH, passwordHash).set(USERS.PASSWORDSALT, passwordSalt).where(USERS.UUID.eq(UUID)).execute();
+            ctx.deleteFrom(USERS)
+                    .where(USERS.UUID.eq(uuidArray))
+                    .execute();
 
             con.close();
             return true;
@@ -102,15 +118,74 @@ public class DatabaseUserRepository implements UserRepository {
     }
 
     @Override
-    public User fetchUserByUUID(String[] UUID) {
+    public boolean persistUserUpdate(User user) {
+
+        JooqUserObject pluginUser = adapter.domainToPlugin(user, JooqUserObject.class);
+
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
 
-            UsersRecord userRecord = ctx.selectFrom(USERS).where(USERS.UUID.eq(UUID)).fetchOne();
-                    
-            User user = new User(Arrays.toString(userRecord.get(USERS.UUID)), Arrays.toString(userRecord.get(USERS.OBJECTNAME)), userRecord.get(USERS.ISADMIN));
+            ctx.update(USERS)
+                    .set(USERS.OBJECTNAME, pluginUser.getObjectNameArray())
+                    .set(USERS.ISADMIN, pluginUser.isAdmin())
+                    .where(USERS.UUID.eq(pluginUser.getUUIDArray()))
+                    .execute();
+
             con.close();
-            return user;
+            return true;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return false;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean persistUserPasswordUpdate(UUID UUID, String passwordHash, String salt){
+        String[] passwordHashArray = {passwordHash};
+        String[] saltArray = {salt};
+        String[] uuidArray = {UUID.toString()};
+
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+
+            ctx.update(USERS)
+                    .set(USERS.PASSWORDHASH, passwordHashArray)
+                    .set(USERS.PASSWORDSALT, saltArray)
+                    .where(USERS.UUID.eq(uuidArray))
+                    .execute();
+
+            con.close();
+            return true;
+        }
+        catch(java.sql.SQLException e){
+            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
+            return false;
+        }
+        catch(DataAccessException e) {
+            System.err.println("Error while writing data to the database:\n" + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public User fetchUserByUUID(UUID UUID) {
+        String[] uuidArray = {UUID.toString()};
+
+        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
+            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
+
+            UsersRecord userRecord = ctx.selectFrom(USERS)
+                    .where(USERS.UUID.eq(uuidArray))
+                    .fetchOne();
+
+            JooqUserObject user = new JooqUserObject(Arrays.toString(userRecord.get(USERS.UUID)), Arrays.toString(userRecord.get(USERS.OBJECTNAME)), userRecord.get(USERS.ISADMIN));
+            con.close();
+            return adapter.pluginToDomain(user);
         }
         catch(SQLException e){
             System.err.println("Error while establishing connection to database:\n" + e.getMessage());
@@ -120,10 +195,14 @@ public class DatabaseUserRepository implements UserRepository {
             System.err.println("Error while writing data to the database:\n" + e.getMessage());
             return null;
         }
+        catch(NullPointerException e){
+            System.err.println("User not found\n" + e.getMessage());
+            return null;
+        }
     }
 
     @Override
-    public Iterable<User> fetchAllUsers() {
+    public List<User> fetchAllUsers() {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
 
@@ -143,7 +222,7 @@ public class DatabaseUserRepository implements UserRepository {
     }
 
     @Override
-    public Iterable<User> fetchAllAdmins() {
+    public List<User> fetchAllAdmins() {
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
 
@@ -151,26 +230,6 @@ public class DatabaseUserRepository implements UserRepository {
 
             con.close();
             return null;
-        }
-        catch(java.sql.SQLException e){
-            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
-            return null;
-        }
-        catch(DataAccessException e) {
-            System.err.println("Error while writing data to the database:\n" + e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public Iterable<User> fetchUsersWithAccessToFile(String[] fileUUID) {
-        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
-            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-
-            List<User> userRecord = ctx.selectFrom(USERS).where(FILEPERMISSIONS.FILE.eq(fileUUID).and(FILEPERMISSIONS.USER.eq(USERS.UUID))).fetchInto(User.class);
-
-            con.close();
-            return userRecord;
         }
         catch(java.sql.SQLException e){
             System.err.println("Error while establishing connection to database:\n" + e.getMessage());
