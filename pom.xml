@@ -30,7 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <junit.version>5.12.0</junit.version>
-        <start-class>src/main/java/com/chelchowskidawidjan/OfficeArchive.java</start-class>
+        <start-class>application/src/main/java/com/chelchowskidawidjan/OfficeArchive.java</start-class>
     </properties>
 
     <dependencies>
