@@ -24,14 +24,18 @@ public class DatabaseCommentRepository implements CommentRepository {
     private final String url = "jdbc:postgresql://localhost:5432/postgres";
     private final String dbUser = "postgres";
     private final String dbPassword = "postgres";
+    private CommentAdapter adapter;
 
     @Override
-    public boolean persistCommentUpload(String[] commentUUID, String[] userUUID, String[] fileUUID, String[] content) {
+    public boolean persistCommentUpload(Comment comment) {
+
+        JooqCommentObject pluginComment = adapter.domainToPlugin(comment, JooqCommentObject.class);
+
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
             InsertValuesStep4<FilecommentsRecord, String[], String[], String[], String[]> step =
                     ctx.insertInto(FILECOMMENTS, FILECOMMENTS.UUID, FILECOMMENTS.AUTHOR, FILECOMMENTS.FILE, FILECOMMENTS.CONTENT)
-                            .values(commentUUID, userUUID, fileUUID, content);
+                            .values(pluginComment.getCommentUUIDArray(), pluginComment.getAuthorUUIDArray(), pluginComment.getFileUUIDArray(), pluginComment.getContentArray());
             step.execute();
             con.close();
             return true;
@@ -47,11 +51,16 @@ public class DatabaseCommentRepository implements CommentRepository {
     }
 
     @Override
-    public boolean persistCommentRemoval(String[] commentUUID) {
+    public boolean persistCommentRemoval(UUID commentUUID) {
+
+        String[] uuidArray = {commentUUID.toString()};
+
         try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
             DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
 
-            ctx.deleteFrom(FILECOMMENTS).where(FILECOMMENTS.UUID.eq(commentUUID)).execute();
+            ctx.deleteFrom(FILECOMMENTS)
+                    .where(FILECOMMENTS.UUID.eq(uuidArray))
+                    .execute();
 
             con.close();
             return true;
@@ -63,68 +72,6 @@ public class DatabaseCommentRepository implements CommentRepository {
         catch(DataAccessException e) {
             System.err.println("Error while writing data to the database:\n" + e.getMessage());
             return false;
-        }
-    }
-
-    @Override
-    public Comment getCommentByUUID(String[] commentUUID) {
-        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)) {
-            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-
-            Comment jooqComment = ctx.selectFrom(FILECOMMENTS).where(FILECOMMENTS.UUID.eq(commentUUID)).fetchOne().into(Comment.class);
-
-            return new Comment(jooqComment.author, jooqComment.comment, jooqComment.creationDate, jooqComment.file);
-        }
-        catch(java.sql.SQLException e){
-            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
-            return null;
-        }
-        catch(DataAccessException e) {
-            System.err.println("Error while fetching data from the database:\n" + e.getMessage());
-            return null;
-        }
-        catch(NullPointerException e){
-            return null;
-        }
-    }
-
-    @Override
-    public Iterable<Comment> getCommentsOfFile(String[] fileUUID) {
-        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
-            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-
-            List<Comment> comments = ctx.selectFrom(FILECOMMENTS).where(FILECOMMENTS.FILE.eq(fileUUID)).fetchInto(Comment.class);
-
-            con.close();
-            return comments;
-        }
-        catch(java.sql.SQLException e){
-            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
-            return null;
-        }
-        catch(DataAccessException e) {
-            System.err.println("Error while writing data to the database:\n" + e.getMessage());
-            return null;
-        }
-    }
-
-    @Override
-    public Iterable<Comment> getCommentsOfUser(String[] userUUID) {
-        try(Connection con = DriverManager.getConnection(url, dbUser, dbPassword)){
-            DSLContext ctx = DSL.using(con, SQLDialect.POSTGRES);
-
-            List<Comment> comments = ctx.selectFrom(FILECOMMENTS).where(FILECOMMENTS.AUTHOR.eq(userUUID)).fetchInto(Comment.class);
-
-            con.close();
-            return comments;
-        }
-        catch(java.sql.SQLException e){
-            System.err.println("Error while establishing connection to database:\n" + e.getMessage());
-            return null;
-        }
-        catch(DataAccessException e) {
-            System.err.println("Error while writing data to the database:\n" + e.getMessage());
-            return null;
         }
     }
 }

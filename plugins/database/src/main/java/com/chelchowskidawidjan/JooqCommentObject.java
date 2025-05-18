@@ -12,9 +12,17 @@ public class JooqCommentObject extends AbstractPluginComment{
         return this.commentUUID;
     }
 
+    String[] getCommentUUIDArray() {
+        return new String[]{this.commentUUID};
+    }
+
     @Override
     String getAuthorUUID() {
         return this.authorUUID;
+    }
+
+    String[] getAuthorUUIDArray() {
+        return new String[]{this.authorUUID};
     }
 
     @Override
@@ -22,9 +30,17 @@ public class JooqCommentObject extends AbstractPluginComment{
         return this.fileUUID;
     }
 
+    String[] getFileUUIDArray() {
+        return new String[]{this.fileUUID};
+    }
+
     @Override
     String getContent() {
         return this.content;
+    }
+
+    String[] getContentArray() {
+        return new String[]{this.content};
     }
 
     @Override

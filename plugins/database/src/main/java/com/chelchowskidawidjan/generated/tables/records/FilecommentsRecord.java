@@ -6,6 +6,8 @@ package com.chelchowskidawidjan.generated.tables.records;
 
 import com.chelchowskidawidjan.generated.tables.Filecomments;
 
+import java.time.LocalDateTime;
+
 import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 
@@ -74,6 +76,34 @@ public class FilecommentsRecord extends UpdatableRecordImpl<FilecommentsRecord> 
         return (String[]) get(3);
     }
 
+    /**
+     * Setter for <code>public.filecomments.creationdate</code>.
+     */
+    public void setCreationdate(LocalDateTime value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>public.filecomments.creationdate</code>.
+     */
+    public LocalDateTime getCreationdate() {
+        return (LocalDateTime) get(4);
+    }
+
+    /**
+     * Setter for <code>public.filecomments.modificationdate</code>.
+     */
+    public void setModificationdate(LocalDateTime value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>public.filecomments.modificationdate</code>.
+     */
+    public LocalDateTime getModificationdate() {
+        return (LocalDateTime) get(5);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -97,13 +127,15 @@ public class FilecommentsRecord extends UpdatableRecordImpl<FilecommentsRecord> 
     /**
      * Create a detached, initialised FilecommentsRecord
      */
-    public FilecommentsRecord(String[] uuid, String[] author, String[] file, String[] content) {
+    public FilecommentsRecord(String[] uuid, String[] author, String[] file, String[] content, LocalDateTime creationdate, LocalDateTime modificationdate) {
         super(Filecomments.FILECOMMENTS);
 
         setUuid(uuid);
         setAuthor(author);
         setFile(file);
         setContent(content);
+        setCreationdate(creationdate);
+        setModificationdate(modificationdate);
         resetTouchedOnNotNull();
     }
 }

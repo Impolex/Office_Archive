@@ -10,6 +10,7 @@ import com.chelchowskidawidjan.generated.tables.Files.FilesPath;
 import com.chelchowskidawidjan.generated.tables.Users.UsersPath;
 import com.chelchowskidawidjan.generated.tables.records.FilecommentsRecord;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -76,6 +77,16 @@ public class Filecomments extends TableImpl<FilecommentsRecord> {
      * The column <code>public.filecomments.content</code>.
      */
     public final TableField<FilecommentsRecord, String[]> CONTENT = createField(DSL.name("content"), SQLDataType.VARCHAR.array().nullable(false), this, "");
+
+    /**
+     * The column <code>public.filecomments.creationdate</code>.
+     */
+    public final TableField<FilecommentsRecord, LocalDateTime> CREATIONDATE = createField(DSL.name("creationdate"), SQLDataType.LOCALDATETIME(6), this, "");
+
+    /**
+     * The column <code>public.filecomments.modificationdate</code>.
+     */
+    public final TableField<FilecommentsRecord, LocalDateTime> MODIFICATIONDATE = createField(DSL.name("modificationdate"), SQLDataType.LOCALDATETIME(6), this, "");
 
     private Filecomments(Name alias, Table<FilecommentsRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

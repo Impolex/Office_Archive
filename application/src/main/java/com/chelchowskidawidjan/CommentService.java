@@ -15,9 +15,6 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    Comment getCommentByUUID(UUID id) {
-        return commentRepository.getCommentByUUID(id);
-    }
 
     boolean postComment(UUID userUUID, UUID fileUUID, String commentText) {
         //TODO Exception for invalid comment
@@ -28,19 +25,4 @@ public class CommentService {
     boolean deleteComment(UUID commentUUID) {
         return commentRepository.persistCommentRemoval(commentUUID);
     }
-
-    boolean editComment(UUID commentUUID, String commentText) {
-        Comment comment = getCommentByUUID(commentUUID);
-        comment.updateComment(commentText);
-        return commentRepository.persistCommentEdit(comment);
-    }
-
-    List<Comment> getAllCommentsOfFile(UUID fileUUID) {
-        return commentRepository.getCommentsOfFile(fileUUID);
-    }
-
-    List<Comment> getAllCommentsOfUser(UUID userUUID) {
-        return commentRepository.getCommentsOfUser(userUUID);
-    }
-
 }
