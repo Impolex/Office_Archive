@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public abstract class AbstractPluginComment {
-    private String commentUUID;
-    private String authorUUID;
-    private String fileUUID;
-    private String content;
-    private LocalDateTime creationDate;
-    private LocalDateTime modificationDate;
+    protected String commentUUID;
+    protected String authorUUID;
+    protected String fileUUID;
+    protected String content;
+    protected LocalDateTime creationDate;
+    protected LocalDateTime modificationDate;
 
     AbstractPluginComment(String commentUUID, String authorUUID, String fileUUID, String content, LocalDateTime creationDate, LocalDateTime modificationDate) {
         this.commentUUID = commentUUID;

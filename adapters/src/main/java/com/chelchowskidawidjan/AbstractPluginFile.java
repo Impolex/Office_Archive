@@ -4,13 +4,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public abstract class AbstractPluginFile {
-    private String fileUUID;
-    private String objectName;
-    private String uploaderUUID;
-    private LocalDateTime creationDate;
-    private LocalDateTime modificationDate;
-    private FileType fileType;
-    private byte[] content;
+    protected String fileUUID;
+    protected String objectName;
+    protected String uploaderUUID;
+    protected LocalDateTime creationDate;
+    protected LocalDateTime modificationDate;
+    protected FileType fileType;
+    protected byte[] content;
 
     AbstractPluginFile(String fileUUID, String objectName, String uploaderUUID, LocalDateTime creationDate, LocalDateTime modificationDate, FileType fileType, byte[] content) {
         this.fileUUID = fileUUID;

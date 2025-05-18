@@ -3,9 +3,9 @@ package com.chelchowskidawidjan;
 import java.util.UUID;
 
 public abstract class AbstractPluginUser {
-    private String uuid;
-    private String objectName;
-    private boolean isAdmin;
+    protected String uuid;
+    protected String objectName;
+    protected boolean isAdmin;
 
     AbstractPluginUser(String uuid, String objectName, boolean isAdmin) {
         this.uuid = uuid;
