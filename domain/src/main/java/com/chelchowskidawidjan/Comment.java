@@ -40,6 +40,12 @@ public class Comment {
     public void setComment(String comment) {
         if(comment != null && comment.length() <= 256){
             this.comment = comment;
+        }
+    }
+
+    public void updateComment(String comment) {
+        if(comment != null && comment.length() <= 256){
+            this.comment = comment;
             this.modifiedDate = LocalDateTime.now();
         }
     }
