@@ -6,19 +6,29 @@ import java.util.UUID;
 public class File {
     private String objectName;
     private final UUID ID;
-    private final User uploader;
+    private final UUID uploaderUUID;
     private final FileType fileType;
     private final LocalDateTime creationDate;
     private LocalDateTime modificationDate;
     private byte[] content;
 
-    public File(String objectName, final User uploader, FileType fileType, byte[] content) {
+    public File(String objectName, final UUID uploaderUUID, FileType fileType, byte[] content) {
         ID = UUID.randomUUID();
         setObjectName(objectName);
-        this.uploader = uploader;
+        this.uploaderUUID = uploaderUUID;
         this.fileType = fileType;
         this.creationDate = LocalDateTime.now();
         this.modificationDate = this.creationDate;
+        this.content = content;
+    }
+
+    public File(UUID uuid, String objectName, final UUID uploaderUUID, FileType fileType, byte[] content, LocalDateTime creationDate, LocalDateTime modificationDate) {
+        ID = uuid;
+        setObjectName(objectName);
+        this.uploaderUUID = uploaderUUID;
+        this.fileType = fileType;
+        this.creationDate = creationDate;
+        this.modificationDate = modificationDate;
         this.content = content;
     }
 
@@ -30,8 +40,8 @@ public class File {
         return ID;
     }
 
-    public User getUploader() {
-        return uploader;
+    public UUID getUploaderUUID() {
+        return uploaderUUID;
     }
 
     public LocalDateTime getModificationDate() {

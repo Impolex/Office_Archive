@@ -14,6 +14,12 @@ public class User {
         setObjectName(objectName);
     }
 
+    public User(UUID uuid, String objectName, boolean isAdmin) {
+        this.ID = uuid;
+        this.isAdmin = isAdmin;
+        setObjectName(objectName);
+    }
+
     public String getObjectName() {
         return objectName;
     }

@@ -19,8 +19,8 @@ public class FileService {
         return fileRepository.fetchFileByUUID(UUID);
     }
 
-    boolean uploadFile(String fileName, User uploader, FileType fileType, byte[] fileContent) {
-        File file = new File(fileName, uploader, fileType, fileContent);
+    boolean uploadFile(String fileName, UUID uploaderUUID, FileType fileType, byte[] fileContent) {
+        File file = new File(fileName, uploaderUUID, fileType, fileContent);
         return fileRepository.persistFileUpload(file);
     }
 

@@ -19,9 +19,9 @@ public class CommentService {
         return commentRepository.getCommentByUUID(id);
     }
 
-    boolean postComment(User user, File file, String commentText) {
+    boolean postComment(UUID userUUID, UUID fileUUID, String commentText) {
         //TODO Exception for invalid comment
-        Comment comment = new Comment(user, commentText, file);
+        Comment comment = new Comment(userUUID, commentText, fileUUID);
         return commentRepository.persistCommentUpload(comment);
     }
 
