@@ -10,7 +10,5 @@ public interface FileRepository {
 
     boolean persistFileDeletion(UUID UUID);
 
-    Map<String, UUID> fetchFilesForUser(UUID userUUID);
-
     File fetchFileByUUID(UUID UUID);
 }

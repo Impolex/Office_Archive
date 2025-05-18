@@ -32,9 +32,4 @@ public class FileService {
     boolean deleteFile(UUID UUID) {
         return fileRepository.persistFileDeletion(UUID);
     }
-
-    Map<String, UUID> getFilesForUser(UUID userUUID){
-        return fileRepository.fetchFilesForUser(userUUID);
-    }
-
 }

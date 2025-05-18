@@ -4,7 +4,13 @@ import java.time.LocalDateTime;
 
 public class JooqFileObject extends AbstractPluginFile{
     JooqFileObject(String fileUUID, String objectName, String uploaderUUID, LocalDateTime creationDate, LocalDateTime modificationDate, FileType fileType, byte[] content) {
-        super(fileUUID, objectName, uploaderUUID, creationDate, modificationDate, fileType, content);
+        super(fileUUID,
+                objectName,
+                uploaderUUID,
+                creationDate,
+                modificationDate,
+                fileType,
+                content);
     }
 
     @Override
@@ -22,9 +28,17 @@ public class JooqFileObject extends AbstractPluginFile{
         return this.objectName;
     }
 
+    String[] getObjectNameArray() {
+        return new String[]{this.objectName};
+    }
+
     @Override
     String getUploaderUUID() {
         return this.uploaderUUID;
+    }
+
+    String[] getUploaderUUIDArray() {
+        return new String[]{this.uploaderUUID};
     }
 
     @Override
@@ -40,6 +54,10 @@ public class JooqFileObject extends AbstractPluginFile{
     @Override
     String getUUID() {
         return this.fileUUID;
+    }
+
+    String[] getUUIDArray() {
+        return new String[]{this.fileUUID};
     }
 
     @Override
