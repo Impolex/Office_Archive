@@ -1,5 +1,7 @@
 package com.chelchowskidawidjan;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -19,13 +21,23 @@ public class CommentAdapter {
         return new Comment(commentUUID, authorUUID, commentContent, fileUUID, creationDate, modificationDate);
     }
 
-    public void domainToPlugin(Comment domainComment, AbstractPluginComment pluginComment){
-        pluginComment.setCommentUUID(domainComment.getUuid().toString());
-        pluginComment.setAuthor(domainComment.getAuthorUUID().toString());
-        pluginComment.setFile(domainComment.getFileUUID().toString());
-        pluginComment.setContent(domainComment.getComment());
-        pluginComment.setCreationDate(domainComment.getCreationDate());
-        pluginComment.setModificationDate(LocalDateTime.now());
+    public <T extends AbstractPluginComment> T domainToPlugin(Comment domainComment, Class<T> pluginCommentClass){
+        try {
+            String commentUUID = domainComment.getUuid().toString();
+            String authorUUID = domainComment.getAuthorUUID().toString();
+            String fileUUID = domainComment.getFileUUID().toString();
+            String content = domainComment.getComment();
+            LocalDateTime creationDate = domainComment.getCreationDate();
+            LocalDateTime modificationDate = domainComment.getModifiedDate();
+
+            Constructor<T> constructor = pluginCommentClass.getConstructor(String.class, String.class, String.class, String.class,
+                    LocalDateTime.class, LocalDateTime.class);
+
+            return constructor.newInstance(commentUUID, authorUUID, fileUUID, content, creationDate, modificationDate);
+        }
+        catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

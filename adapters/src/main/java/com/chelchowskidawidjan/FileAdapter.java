@@ -1,5 +1,6 @@
 package com.chelchowskidawidjan;
 
+import java.lang.reflect.Constructor;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,13 +21,21 @@ public class FileAdapter {
         return new File(uuid, objectName, UUID.fromString(uploaderUUID), fileType, content, creationDate, modificationDate);
     }
 
-    public void domainToPlugin(File file, AbstractPluginFile pluginFile){
-        pluginFile.setUUID(file.getID().toString());
-        pluginFile.setObjectName(file.getObjectName());
-        pluginFile.setUploaderUUID(file.getUploaderUUID().toString());
-        pluginFile.setCreationDate(file.getCreationDate());
-        pluginFile.setModificationDate(file.getModificationDate());
-        pluginFile.setFileType(file.getFileType());
-        pluginFile.setContent(file.getContent());
+    public <T extends AbstractPluginFile> T domainToPlugin(File domainFile, Class<T> pluginFileClass){
+        try{
+            String fileUUID = domainFile.getID().toString();
+            String objectName = domainFile.getObjectName();
+            String uploaderUUID = domainFile.getUploaderUUID().toString();
+            FileType fileType = domainFile.getFileType();
+            byte[] content = domainFile.getContent();
+            LocalDateTime creationDate = domainFile.getCreationDate();
+            LocalDateTime modificationDate = domainFile.getModificationDate();
+            Constructor<T> constructor = pluginFileClass.getConstructor(String.class, String.class, String.class, LocalDateTime.class, LocalDateTime.class, FileType.class, byte[].class);
+
+            return constructor.newInstance(fileUUID, objectName, uploaderUUID, creationDate, modificationDate, fileType, content);
+        }
+        catch(Exception e){
+            throw new RuntimeException(e);
+        }
     }
 }
